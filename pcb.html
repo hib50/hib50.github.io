@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <title>RP2040 Multi-Sensor Board | Hassan Iqbal</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        <a href="index.html">HI.</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="index.html#about">About</a>
+        <a href="projects.html">Featured Work</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="https://github.com/hib50" target="_blank">GitHub</a>
+    </div>
+
+</nav>
+
+
+<main class="project-page">
+
+<section class="project-hero">
+
+    <p class="section-label">
+        PCB DESIGN • EMBEDDED HARDWARE • SENSOR INTEGRATION
+    </p>
+
+    <h1>RP2040 Multi-Sensor Embedded Board</h1>
+
+    <p class="project-summary">
+        A custom embedded-system schematic centered around the RP2040,
+        combining inertial sensing, environmental sensing,
+        external flash storage, USB-C connectivity,
+        dual-voltage regulation and support circuitry.
+    </p>
+
+    <div class="tags">
+        <span>RP2040</span>
+        <span>ICM-20948</span>
+        <span>BME280</span>
+        <span>W25Q16JVSS</span>
+        <span>USB-C</span>
+        <span>3.3 V / 1.8 V</span>
+        <span>KiCad</span>
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">SYSTEM ARCHITECTURE</p>
+
+    <h2>One controller, multiple sensing and support blocks</h2>
+
+    <div class="architecture-stack">
+
+        <div class="architecture-box">
+            USB-C + 5 V Input
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            3.3 V Regulation
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            RP2040
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            BME280
+        </div>
+
+        <div class="architecture-arrow">+</div>
+
+        <div class="architecture-box">
+            ICM-20948
+        </div>
+
+        <div class="architecture-arrow">+</div>
+
+        <div class="architecture-box">
+            QSPI Flash
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">CORE COMPONENTS</p>
+
+    <h2>Functional blocks in the design</h2>
+
+    <table class="spec-table">
+
+        <tr>
+            <td>Microcontroller</td>
+            <td>RP2040</td>
+        </tr>
+
+        <tr>
+            <td>Inertial Sensor</td>
+            <td>ICM-20948 9-axis IMU</td>
+        </tr>
+
+        <tr>
+            <td>Environmental Sensor</td>
+            <td>
+                BME280 humidity, pressure
+                and temperature sensor
+            </td>
+        </tr>
+
+        <tr>
+            <td>External Flash</td>
+            <td>W25Q16JVSS QSPI flash</td>
+        </tr>
+
+        <tr>
+            <td>Primary Regulator</td>
+            <td>AP2112K-3.3</td>
+        </tr>
+
+        <tr>
+            <td>IMU Rail</td>
+            <td>AP2112K-1.8</td>
+        </tr>
+
+        <tr>
+            <td>Interface</td>
+            <td>USB-C USB 2.0</td>
+        </tr>
+
+        <tr>
+            <td>Support</td>
+            <td>
+                Crystal, reset, BOOTSEL,
+                decoupling and pull-up networks
+            </td>
+        </tr>
+
+    </table>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">POWER ARCHITECTURE</p>
+
+    <h2>Separate rails for digital logic and sensor requirements</h2>
+
+    <p>
+        The schematic derives a 3.3 V rail from the USB-C / 5 V input
+        and then creates a separate 1.8 V rail for the ICM-20948.
+        Local decoupling capacitors are distributed around the
+        controller and sensors to support stable operation.
+    </p>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">COMMUNICATION</p>
+
+    <h2>Digital buses and board support</h2>
+
+    <div class="challenge-grid">
+
+        <div class="challenge-card">
+
+            <h3>QSPI Flash</h3>
+
+            <p>
+                The W25Q16 flash connects through RP2040
+                QSPI signals for external program/data storage.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>Sensor Bus</h3>
+
+            <p>
+                The IMU and environmental sensor are integrated
+                through shared digital sensor lines with
+                appropriate pull-up support.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>USB-C</h3>
+
+            <p>
+                USB differential lines are routed to the RP2040,
+                with CC resistors and power entry included
+                in the schematic.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>Debug / Reset</h3>
+
+            <p>
+                The design includes SWD support,
+                reset circuitry and a BOOTSEL
+                connection to the flash path.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">DESIGN TAKEAWAYS</p>
+
+    <h2>What this project demonstrates</h2>
+
+    <ul class="bullets">
+
+        <li>
+            Breaking an embedded system into functional blocks
+            before detailed routing.
+        </li>
+
+        <li>
+            Managing mixed-voltage requirements across
+            sensors and MCU support circuitry.
+        </li>
+
+        <li>
+            Integrating USB, flash, sensor interfaces and
+            reset/debug support around a bare microcontroller.
+        </li>
+
+        <li>
+            Applying decoupling and pull-up networks
+            at the schematic level.
+        </li>
+
+    </ul>
+
+</section>
+
+
+<section class="next-project">
+
+    <p>Back to</p>
+
+    <a href="projects.html">
+        Featured Engineering Projects →
+    </a>
+
+</section>
+
+</main>
+
+
+<footer>
+    <p>Designed & built by Hassan Iqbal</p>
+</footer>
+
+</body>
+</html>
