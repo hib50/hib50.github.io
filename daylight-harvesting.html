@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <title>Daylight Harvesting Validation | Hassan Iqbal</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        <a href="index.html">HI.</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="index.html#about">About</a>
+        <a href="projects.html">Featured Work</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="https://github.com/hib50" target="_blank">GitHub</a>
+    </div>
+
+</nav>
+
+
+<main class="project-page">
+
+<section class="project-hero">
+
+    <p class="section-label">
+        IN DEVELOPMENT • DAYLIGHT HARVESTING • VALIDATION
+    </p>
+
+    <h1>Automated Daylight Harvesting Validation Platform</h1>
+
+    <p class="project-summary">
+        A controlled test system being developed to evaluate how
+        EcoBright’s LED 2.0 fixture reduces artificial-light demand as
+        ambient daylight increases, while maintaining stable
+        work-plane illuminance.
+    </p>
+
+    <span class="status-pill">
+        STATUS: IN PROGRESS
+    </span>
+
+    <div class="tags">
+        <span>ESP32</span>
+        <span>VEML7700</span>
+        <span>Python</span>
+        <span>I²C</span>
+        <span>0–10 V Dimming</span>
+        <span>Lux Validation</span>
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">RESEARCH QUESTION</p>
+
+    <h2>
+        Does the fixture reduce power as daylight increases
+        while preserving useful illuminance?
+    </h2>
+
+    <p>
+        The reduced-scope study compares a standard LED baseline
+        against the EcoBright LED 2.0 system across four controlled
+        daylight-access levels: no daylight, low daylight,
+        medium daylight and high daylight.
+    </p>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">TEST ARCHITECTURE</p>
+
+    <h2>Controlled daylight emulation</h2>
+
+    <p>
+        A secondary LED panel acts as the daylight-emulation source.
+        Diffusion and matte reflective surfaces are used to produce
+        broad ambient illumination instead of a concentrated hotspot.
+        The test area is isolated from external light using black
+        curtains and a fixed geometry.
+    </p>
+
+
+    <div class="architecture-stack">
+
+        <div class="architecture-box">
+            Secondary LED Daylight Source
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            Diffuse Ambient Light
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            EcoBright LED 2.0
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            VEML7700 + Lux Meter
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            0–10 V Signal Logging
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            Energy / Cost / Carbon Modeling
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">EXPERIMENTAL MATRIX</p>
+
+    <h2>Four standardized daylight conditions</h2>
+
+    <div class="scenario-grid">
+
+        <div class="scenario-card">
+            <h3>No Daylight</h3>
+            <p>
+                Control condition with the emulating source disabled
+                and the fixture at full demand.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>Low Daylight</h3>
+            <p>
+                Weak diffuse ambient contribution used to capture
+                the lower-bound harvesting response.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>Medium Daylight</h3>
+            <p>
+                Moderate diffuse ambient contribution representing
+                a typical operating state.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>High Daylight</h3>
+            <p>
+                Strong ambient contribution used to evaluate
+                upper-bound dimming behavior.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">INSTRUMENTATION</p>
+
+    <h2>What the system measures</h2>
+
+    <table class="spec-table">
+
+        <tr>
+            <td>Ambient / Work-Plane Sensing</td>
+            <td>
+                VEML7700 digital lux sensors +
+                calibrated handheld lux meters
+            </td>
+        </tr>
+
+        <tr>
+            <td>Dimming Signal</td>
+            <td>
+                0–10 V analog control line monitored through
+                safe voltage-divider instrumentation
+            </td>
+        </tr>
+
+        <tr>
+            <td>Power Verification</td>
+            <td>
+                Discrete direct measurements at key
+                operating thresholds
+            </td>
+        </tr>
+
+        <tr>
+            <td>Data Output</td>
+            <td>
+                Timed lux, control voltage and
+                mapped wattage estimates
+            </td>
+        </tr>
+
+        <tr>
+            <td>Commercial Scaling</td>
+            <td>
+                Energy, cost and carbon outputs
+                per fixture and per 100 fixtures
+            </td>
+        </tr>
+
+    </table>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">MODELING STRATEGY</p>
+
+    <h2>Turning dimming voltage into commercial performance</h2>
+
+    <p>
+        The proposal models instantaneous dimming ratio from measured
+        control voltage relative to the 10 V reference, then maps that
+        ratio to fixture power.
+    </p>
+
+    <p>
+        Accumulated energy is computed over the test interval and
+        compared against the standard-LED baseline. Direct power
+        spot-checks at major operating points are planned to validate
+        the mathematical mapping.
+    </p>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">CURRENT ENGINEERING WORK</p>
+
+    <h2>What is being built now</h2>
+
+    <div class="challenge-grid">
+
+        <div class="challenge-card">
+
+            <h3>Light Isolation</h3>
+
+            <p>
+                Building a repeatable enclosure that minimizes
+                uncontrolled external light.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>Sensor Calibration</h3>
+
+            <p>
+                Fixing geometry and comparing digital lux sensing
+                against handheld reference meters.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>0–10 V Acquisition</h3>
+
+            <p>
+                Safely monitoring the commercial dimming-control
+                line using low-voltage instrumentation.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>Automated Logging</h3>
+
+            <p>
+                Combining embedded acquisition and Python-based
+                logging into a repeatable test workflow.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">PLANNED DELIVERABLES</p>
+
+    <h2>Outputs from the validation study</h2>
+
+    <ul class="bullets">
+
+        <li>
+            Formal engineering validation report.
+        </li>
+
+        <li>
+            Lux validation across four daylight exposure levels.
+        </li>
+
+        <li>
+            Cleaned CSV logs containing timed lux,
+            control voltage and mapped wattage estimates.
+        </li>
+
+        <li>
+            Commercial energy, financial and carbon calculations
+            per fixture and per 100 fixtures.
+        </li>
+
+        <li>
+            Engineering recommendations for future
+            full-scale environmental testing.
+        </li>
+
+    </ul>
+
+</section>
+
+
+<section class="next-project">
+
+    <p>Next Project</p>
+
+    <a href="turret.html">
+        Hand-Gesture Controlled Robotic Turret →
+    </a>
+
+</section>
+
+</main>
+
+
+<footer>
+    <p>Designed & built by Hassan Iqbal</p>
+</footer>
+
+</body>
+</html>
