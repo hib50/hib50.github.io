@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <title>Hand-Gesture Controlled Turret | Hassan Iqbal</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        <a href="index.html">HI.</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="index.html#about">About</a>
+        <a href="projects.html">Featured Work</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="https://github.com/hib50" target="_blank">GitHub</a>
+    </div>
+
+</nav>
+
+
+<main class="project-page">
+
+<section class="project-hero">
+
+    <p class="section-label">
+        ROBOTICS • COMPUTER VISION • EMBEDDED CONTROL
+    </p>
+
+    <h1>Hand-Gesture Controlled Robotic Turret</h1>
+
+    <p class="project-summary">
+        A Raspberry Pi and Arduino robotic platform that uses
+        OpenCV and MediaPipe hand landmarks to convert gestures
+        and hand position into multi-servo motion and trigger control.
+    </p>
+
+    <div class="tags">
+        <span>Raspberry Pi</span>
+        <span>Python</span>
+        <span>OpenCV</span>
+        <span>MediaPipe</span>
+        <span>Arduino</span>
+        <span>UART / USB Serial</span>
+        <span>Servo Control</span>
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">SYSTEM OVERVIEW</p>
+
+    <h2>Vision on the Pi, actuation on the Arduino</h2>
+
+    <p>
+        The Raspberry Pi processes the camera stream,
+        detects a single hand using MediaPipe and maps
+        palm position and finger-state information into
+        X, Y and Z servo commands.
+    </p>
+
+    <p>
+        Commands are sent to the Arduino over serial,
+        while the Raspberry Pi directly controls the laser GPIO.
+    </p>
+
+
+    <div class="architecture-stack">
+
+        <div class="architecture-box">
+            USB Camera
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            OpenCV
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            MediaPipe Hand Tracking
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            Gesture / Coordinate Mapping
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            Serial Command
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            Arduino + 3 Servos
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">HARDWARE CONNECTIONS</p>
+
+    <h2>Pi, Arduino, servos and laser</h2>
+
+    <table class="spec-table">
+
+        <tr>
+            <td>Raspberry Pi → Arduino</td>
+            <td>
+                GPIO 8 TX to Arduino RX,
+                with shared ground
+            </td>
+        </tr>
+
+        <tr>
+            <td>X Servo</td>
+            <td>Arduino PWM pin 3</td>
+        </tr>
+
+        <tr>
+            <td>Y Servo</td>
+            <td>Arduino PWM pin 5</td>
+        </tr>
+
+        <tr>
+            <td>Z Servo</td>
+            <td>Arduino PWM pin 6</td>
+        </tr>
+
+        <tr>
+            <td>Laser</td>
+            <td>Raspberry Pi GPIO 17</td>
+        </tr>
+
+        <tr>
+            <td>Serial Rate</td>
+            <td>115200 baud</td>
+        </tr>
+
+    </table>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">GESTURE LOGIC</p>
+
+    <h2>Natural hand input mapped to different control modes</h2>
+
+    <div class="scenario-grid">
+
+        <div class="scenario-card">
+
+            <h3>One Finger</h3>
+
+            <p>
+                Confirmed one-finger detection enables X-axis
+                control using filtered palm X position.
+            </p>
+
+        </div>
+
+
+        <div class="scenario-card">
+
+            <h3>Two Fingers</h3>
+
+            <p>
+                Confirmed two-finger detection enables Y-axis
+                control using filtered palm Y position.
+            </p>
+
+        </div>
+
+
+        <div class="scenario-card">
+
+            <h3>Closed Fist</h3>
+
+            <p>
+                A held fist starts a timed trigger sequence
+                that drives the Z-axis firing servo forward,
+                then returns it.
+            </p>
+
+        </div>
+
+
+        <div class="scenario-card">
+
+            <h3>No Hand</h3>
+
+            <p>
+                The laser is turned off and the trigger servo
+                is returned to its back position.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">CONTROL DETAILS</p>
+
+    <h2>Filtering, limits and command rate</h2>
+
+    <p>
+        The Python program applies exponential filtering to X and Y
+        hand coordinates before converting them to servo angles.
+        The Arduino then clamps received angles to configured
+        mechanical limits before issuing servo commands.
+    </p>
+
+
+    <div class="results-grid">
+
+        <div class="result-card">
+            <h3>30 Hz</h3>
+            <p>
+                Configured command-send target
+                in the Raspberry Pi control loop.
+            </p>
+        </div>
+
+        <div class="result-card">
+            <h3>3 Servos</h3>
+            <p>
+                X, Y and Z channels for multi-axis
+                motion and trigger actuation.
+            </p>
+        </div>
+
+        <div class="result-card">
+            <h3>115200</h3>
+            <p>
+                Serial communication baud rate
+                between Raspberry Pi and Arduino.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">SOFTWARE PIPELINE</p>
+
+    <h2>High-level control flow</h2>
+
+    <div class="code-flow">Camera frame
+   ↓
+Mirror + RGB conversion
+   ↓
+MediaPipe hand landmarks
+   ↓
+Finger counting + palm position
+   ↓
+Mode selection (X / Y / trigger)
+   ↓
+Filtered coordinate-to-angle mapping
+   ↓
+"x,y,z" serial command
+   ↓
+Arduino angle clamp + servo.write()</div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">ENGINEERING CHALLENGES</p>
+
+    <h2>What the system had to solve</h2>
+
+    <div class="challenge-grid">
+
+        <div class="challenge-card">
+
+            <h3>Noisy Hand Coordinates</h3>
+
+            <p>
+                Raw vision coordinates fluctuate frame-to-frame,
+                so filtering was needed before servo mapping.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>Gesture Confirmation</h3>
+
+            <p>
+                One- and two-finger states are confirmed
+                across multiple frames to reduce accidental
+                mode switching.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>Mechanical Limits</h3>
+
+            <p>
+                Servo ranges are clamped in firmware to avoid
+                commanding unsafe positions.
+            </p>
+
+        </div>
+
+
+        <div class="challenge-card">
+
+            <h3>Distributed Control</h3>
+
+            <p>
+                The project splits high-level vision processing
+                and low-level servo control across two computing platforms.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="next-project">
+
+    <p>Next Project</p>
+
+    <a href="pcb.html">
+        RP2040 Multi-Sensor Embedded Board →
+    </a>
+
+</section>
+
+</main>
+
+
+<footer>
+    <p>Designed & built by Hassan Iqbal</p>
+</footer>
+
+</body>
+</html>
