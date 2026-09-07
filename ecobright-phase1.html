@@ -1,440 +1,646 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-    <title>EcoBright Motion-Sensing LED Validation | Hassan Iqbal</title>
-    <meta name="description" content="Engineering case study: controlled validation of EcoBright motion-sensing LED systems using ESP32 automation, PIR and microwave sensing, repeatable occupancy simulation, 1 Hz data acquisition and energy analysis.">
+    <title>EcoBright Phase 1 | Hassan Iqbal</title>
 
-    <link rel="stylesheet" href="../style.css">
+    <meta
+        name="description"
+        content="EcoBright motion-sensing LED validation engineering case study by Hassan Iqbal."
+    >
 
-    <style>
-        /* Page-specific styles. Safe to keep inside this file. */
-        .eb-page { width: min(1120px, 92%); margin: 0 auto; }
-        .eb-hero { padding: 120px 0 80px; max-width: 980px; }
-        .eb-kicker { color: #4fc3f7; font-size: .78rem; letter-spacing: 2px; font-weight: 800; }
-        .eb-hero h1 { font-size: clamp(3.2rem, 7vw, 6rem); line-height: 1.02; margin: 14px 0 24px; }
-        .eb-subtitle { color: #a9b4c0; font-size: 1.24rem; line-height: 1.75; max-width: 850px; }
-        .eb-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 36px; }
-        .eb-meta div { padding: 18px; border: 1px solid #1e2a35; border-radius: 10px; background: #10161d; }
-        .eb-meta span { display:block; color:#71808d; font-size:.72rem; letter-spacing:1.5px; font-weight:700; margin-bottom:5px; }
-        .eb-meta strong { font-size:.96rem; }
-
-        .eb-section { padding: 90px 0; border-top: 1px solid #1e2a35; }
-        .eb-section h2 { font-size: clamp(2rem, 4vw, 3rem); margin: 10px 0 22px; line-height:1.15; }
-        .eb-section > p, .eb-copy { color:#a9b4c0; max-width:850px; font-size:1.06rem; line-height:1.8; }
-        .eb-section p + p { margin-top: 16px; }
-
-        .eb-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:34px; }
-        .eb-metric { border:1px solid #1e2a35; border-radius:12px; padding:24px; background:#10161d; }
-        .eb-metric strong { display:block; color:#4fc3f7; font-size:1.9rem; line-height:1.1; }
-        .eb-metric span { display:block; color:#8795a1; margin-top:8px; font-size:.9rem; }
-
-        .eb-callout { margin-top:32px; padding:24px 26px; border-left:3px solid #4fc3f7; background:#0f151c; border-radius:8px; color:#bdc7d0; line-height:1.75; }
-
-        .eb-flow { margin-top:36px; display:grid; grid-template-columns:repeat(7,1fr); gap:10px; align-items:center; }
-        .eb-flow .node { background:#10161d; border:1px solid #273746; border-radius:9px; padding:16px 10px; text-align:center; font-size:.86rem; font-weight:700; min-height:74px; display:flex; align-items:center; justify-content:center; }
-        .eb-flow .arrow { color:#4fc3f7; text-align:center; font-size:1.4rem; }
-
-        .eb-gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:36px; }
-        .eb-figure { margin:0; background:#10161d; border:1px solid #1e2a35; border-radius:12px; overflow:hidden; }
-        .eb-figure img { width:100%; height:330px; object-fit:contain; background:#f3f3ef; display:block; }
-        .eb-figure.tall img { height:430px; }
-        .eb-figure figcaption { padding:16px 18px 19px; color:#8f9ca7; font-size:.9rem; line-height:1.55; }
-        .eb-figure figcaption strong { color:#e8edf2; display:block; margin-bottom:3px; }
-
-        .eb-two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:34px; }
-        .eb-card { background:#10161d; border:1px solid #1e2a35; border-radius:12px; padding:26px; }
-        .eb-card h3 { font-size:1.35rem; margin-bottom:10px; }
-        .eb-card p, .eb-card li { color:#8e9ba6; line-height:1.7; }
-        .eb-card ul { padding-left:19px; margin-top:10px; }
-        .eb-card li + li { margin-top:7px; }
-
-        .eb-tech-table { width:100%; border-collapse:collapse; margin-top:30px; overflow:hidden; border-radius:10px; }
-        .eb-tech-table th, .eb-tech-table td { padding:15px 16px; border-bottom:1px solid #1e2a35; text-align:left; }
-        .eb-tech-table th { width:32%; color:#8fa1af; font-size:.82rem; letter-spacing:.8px; text-transform:uppercase; }
-        .eb-tech-table td { color:#dce4ea; }
-        .eb-tech-table tr { background:#10161d; }
-        .eb-tech-table tr:last-child th, .eb-tech-table tr:last-child td { border-bottom:0; }
-
-        .eb-results { margin-top:34px; display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
-        .eb-result-list { background:#10161d; border:1px solid #1e2a35; border-radius:12px; overflow:hidden; }
-        .eb-result-row { display:grid; grid-template-columns:1.4fr .6fr; gap:12px; padding:14px 18px; border-bottom:1px solid #1e2a35; }
-        .eb-result-row:last-child { border-bottom:0; }
-        .eb-result-row span { color:#9aa7b1; }
-        .eb-result-row strong { text-align:right; color:#4fc3f7; }
-
-        .eb-timeline { margin-top:34px; display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
-        .eb-timeline-step { background:#10161d; border:1px solid #1e2a35; border-radius:10px; padding:20px; }
-        .eb-timeline-step span { color:#4fc3f7; font-size:.72rem; letter-spacing:1.4px; font-weight:800; }
-        .eb-timeline-step h3 { font-size:1rem; margin:8px 0 6px; }
-        .eb-timeline-step p { color:#81909c; font-size:.87rem; line-height:1.55; }
-
-        .eb-docs { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:30px; }
-        .eb-doc { padding:22px; border:1px solid #1e2a35; border-radius:10px; background:#10161d; }
-        .eb-doc span { color:#4fc3f7; font-size:.72rem; font-weight:800; letter-spacing:1.2px; }
-        .eb-doc h3 { margin:7px 0 7px; font-size:1.05rem; }
-        .eb-doc p { color:#8795a1; font-size:.88rem; line-height:1.55; }
-
-        .eb-restricted { margin-top:28px; padding:20px 22px; border:1px solid #384754; background:#0e141a; border-radius:10px; color:#93a0ab; font-size:.92rem; line-height:1.7; }
-        .eb-restricted strong { color:#dfe6ec; }
-
-        .eb-next { padding:70px 0 120px; border-top:1px solid #1e2a35; }
-        .eb-next p { color:#74818d; margin-bottom:7px; }
-        .eb-next a { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:800; color:#fff; text-decoration:none; }
-        .eb-next a:hover { color:#4fc3f7; }
-
-        @media (max-width: 900px) {
-            .eb-meta, .eb-metrics { grid-template-columns:repeat(2,1fr); }
-            .eb-gallery, .eb-two-col, .eb-results { grid-template-columns:1fr; }
-            .eb-timeline { grid-template-columns:repeat(2,1fr); }
-            .eb-docs { grid-template-columns:1fr; }
-            .eb-flow { grid-template-columns:1fr; }
-            .eb-flow .arrow { transform:rotate(90deg); }
-        }
-
-        @media (max-width: 560px) {
-            .eb-meta, .eb-metrics, .eb-timeline { grid-template-columns:1fr; }
-            .eb-figure img, .eb-figure.tall img { height:auto; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 
 <body>
 
 <nav>
-    <div class="logo"><a href="../index.html">HI.</a></div>
-    <div class="nav-links">
-        <a href="../index.html#about">About</a>
-        <a href="../projects.html">Featured Work</a>
-        <a href="../index.html#leadership">Leadership</a>
-        <a href="../index.html#contact">Contact</a>
-        <a href="https://github.com/hib50" target="_blank" rel="noopener">GitHub</a>
+
+    <div class="logo">
+        <a href="index.html">HI.</a>
     </div>
+
+    <div class="nav-links">
+        <a href="index.html#about">About</a>
+        <a href="projects.html">Featured Work</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="https://github.com/hib50" target="_blank">GitHub</a>
+    </div>
+
 </nav>
 
-<main class="eb-page">
 
-    <section class="eb-hero">
-        <p class="eb-kicker">INDUSTRY VALIDATION • EMBEDDED SYSTEMS • TEST AUTOMATION</p>
-        <h1>EcoBright Motion-Sensing LED Validation Platform</h1>
-        <p class="eb-subtitle">
-            A controlled mechatronics test platform developed at Toronto Metropolitan University’s
-            ELIXIR Laboratory to validate occupancy-sensing LED behaviour, quantify energy savings,
-            and evaluate PIR and microwave sensing under repeatable commercial occupancy scenarios.
-        </p>
+<main class="project-page">
 
-        <div class="eb-meta">
-            <div><span>ROLE</span><strong>Student Researcher</strong></div>
-            <div><span>ORGANIZATION</span><strong>ELIXIR Laboratory</strong></div>
-            <div><span>INDUSTRY PARTNER</span><strong>EcoBright</strong></div>
-            <div><span>STATUS</span><strong>Completed • Apr. 2026</strong></div>
-        </div>
-    </section>
+<section class="project-hero">
 
-    <section class="eb-section">
-        <p class="eb-kicker">PROJECT AT A GLANCE</p>
-        <h2>From a commercial validation question to a repeatable physical test system.</h2>
-        <p>
-            The project examined whether occupancy-based LED control could reliably reduce lighting
-            energy use while maintaining the intended sensing, dimming, standby and shut-off behaviour.
-            Instead of relying on people to repeatedly walk through the sensing field, the research team
-            developed an automated physical stimulus system capable of reproducing controlled motion events.
-        </p>
-        <p>
-            Testing covered five representative commercial environments — school, fitness centre,
-            warehouse, shopping centre and parking garage — with the parking configuration evaluated
-            using both PIR and microwave sensing.
-        </p>
+    <p class="section-label">
+        INDUSTRY VALIDATION • EMBEDDED SYSTEMS • AUTOMATION
+    </p>
 
-        <div class="eb-metrics">
-            <div class="eb-metric"><strong>35.24–62.12%</strong><span>Scenario-dependent modeled energy savings</span></div>
-            <div class="eb-metric"><strong>1 Hz</strong><span>Continuous hardware event logging</span></div>
-            <div class="eb-metric"><strong>5</strong><span>Commercial occupancy profiles</span></div>
-            <div class="eb-metric"><strong>2</strong><span>PIR and microwave sensing configurations</span></div>
-        </div>
+    <h1>EcoBright Motion-Sensing LED Validation Platform</h1>
 
-        <div class="eb-callout">
-            <strong>Validation outcome:</strong> under the tested laboratory conditions, the final study
-            reported reliable response to the controlled stimulus and correct execution of configured
-            dimming, standby and shut-off behaviour.
-        </div>
-    </section>
+    <p class="project-summary">
+        A controlled laboratory validation platform developed to evaluate
+        occupancy-sensing LED behavior through repeatable motion simulation,
+        embedded data acquisition, fixture-response tracking and
+        energy-savings analysis.
+    </p>
 
-    <section class="eb-section">
-        <p class="eb-kicker">ENGINEERING PROBLEM</p>
-        <h2>How do you test occupancy sensing without introducing inconsistent human movement?</h2>
-        <p>
-            A major challenge was repeatability. Human participants would introduce uncontrolled changes
-            in speed, path, body position and timing. To isolate the sensing system itself, the test bench
-            required a repeatable physical target that could trigger the sensor on demand across long-duration tests.
-        </p>
-        <p>
-            The solution was a servo-driven actuator carrying a heated anodized-aluminum target. The heated
-            plate provided a stable long-wave infrared source for PIR testing, while the moving aluminum target
-            also served as a repeatable physical reflector during microwave-sensor evaluation.
-        </p>
+    <div class="tags">
+        <span>ESP32 WROVER-E</span>
+        <span>PIR</span>
+        <span>Microwave</span>
+        <span>Python</span>
+        <span>MATLAB</span>
+        <span>Servo Actuation</span>
+    </div>
 
-        <div class="eb-flow">
-            <div class="node">Scenario Algorithm</div><div class="arrow">→</div>
-            <div class="node">ESP32 WROVER-E</div><div class="arrow">→</div>
-            <div class="node">Servo + Heated Target</div><div class="arrow">→</div>
-            <div class="node">PIR / Microwave Sensor</div><div class="arrow">→</div>
-            <div class="node">LED Dimming Response</div><div class="arrow">→</div>
-            <div class="node">1 Hz Logging</div><div class="arrow">→</div>
-            <div class="node">Energy Analysis</div>
-        </div>
-    </section>
+</section>
 
-    <section class="eb-section">
-        <p class="eb-kicker">DESIGN EVOLUTION</p>
-        <h2>Concept → CAD → physical test bench.</h2>
-        <p>
-            The original research proposal used CAD to define the test geometry and actuator concept before
-            the final laboratory fixture was assembled. The images below show that progression from planned
-            geometry to the completed physical setup.
-        </p>
 
-        <div class="eb-gallery">
-            <figure class="eb-figure">
-                <img src="../assets/images/ecobright-phase1/cad-test-setup-rear.jpeg" alt="CAD rear view of the proposed EcoBright motion-sensing LED test setup">
-                <figcaption><strong>Initial CAD test environment</strong>Rear-view concept showing the enclosed test region, tables, PIR sensor and rotating beam placement.</figcaption>
-            </figure>
+<section class="case-section">
 
-            <figure class="eb-figure">
-                <img src="../assets/images/ecobright-phase1/cad-servo-mechanism.jpeg" alt="Detailed CAD model of servo actuator mechanism">
-                <figcaption><strong>Actuator concept</strong>Detailed CAD model of the servo housing and rotating beam mechanism used to generate repeatable motion.</figcaption>
-            </figure>
+    <p class="section-label">PROJECT SNAPSHOT</p>
 
-            <figure class="eb-figure">
-                <img src="../assets/images/ecobright-phase1/test-setup-schematic.png" alt="Schematic layout of the final physical test environment">
-                <figcaption><strong>Final system layout</strong>Test-bench schematic showing the LED panel, sensor location, monitoring camera and actuator-based infrared target.</figcaption>
-            </figure>
+    <h2>What this project involved</h2>
 
-            <figure class="eb-figure">
-                <img src="../assets/images/ecobright-phase1/physical-test-setup.jpeg" alt="Photograph of the physical EcoBright validation test setup">
-                <figcaption><strong>Physical laboratory setup</strong>The completed under-table test environment used for controlled sensor validation.</figcaption>
-            </figure>
-        </div>
-    </section>
+    <div class="project-meta-grid">
 
-    <section class="eb-section">
-        <p class="eb-kicker">HARDWARE & ELECTRONICS</p>
-        <h2>Embedded control, sensing and physical actuation.</h2>
-
-        <table class="eb-tech-table">
-            <tr><th>Controller</th><td>ESP32 WROVER-E</td></tr>
-            <tr><th>Occupancy sensors</th><td>ANT 1P 4T PIR sensor + microwave motion sensor</td></tr>
-            <tr><th>Physical stimulus</th><td>Servo-driven actuator beam with PTC-heated anodized aluminum target</td></tr>
-            <tr><th>Servo control</th><td>PWM from ESP32, with the servo control signal on GPIO 13</td></tr>
-            <tr><th>LED state measurement</th><td>Analog voltage monitored through a divider network; 2.5 V calibrated as the 100% brightness reference</td></tr>
-            <tr><th>Low-voltage power</th><td>Isolated 5 V / 6 A supply plus 5 V Arduino supply with shared low-voltage ground</td></tr>
-            <tr><th>Monitoring</th><td>External camera for visual verification of actuator motion, sensor response and false triggers</td></tr>
-        </table>
-
-        <div class="eb-gallery">
-            <figure class="eb-figure">
-                <img src="../assets/images/ecobright-phase1/electrical-diagram.png" alt="ESP32 electronic control and sensor interface schematic">
-                <figcaption><strong>Electrical control diagram</strong>ESP32-based control and sensing architecture, including servo control and sensor-signal conditioning.</figcaption>
-            </figure>
-
-            <figure class="eb-figure tall">
-                <img src="../assets/images/ecobright-phase1/physical-electronics.jpeg" alt="Physical breadboard electronics used in the EcoBright validation test bench">
-                <figcaption><strong>Physical electronics</strong>Breadboard implementation used during the validation campaign.</figcaption>
-            </figure>
-        </div>
-    </section>
-
-    <section class="eb-section">
-        <p class="eb-kicker">SOFTWARE & DATA ACQUISITION</p>
-        <h2>Turning physical sensor behaviour into analyzable time-series data.</h2>
-
-        <div class="eb-two-col">
-            <div class="eb-card">
-                <h3>ESP32 Test Automation</h3>
-                <p>The embedded test program generated scenario-specific actuator behaviour and tracked fixture state during long-duration runs.</p>
-                <ul>
-                    <li>Servo motion generated from probabilistic occupancy profiles</li>
-                    <li>Sensor activation and LED dimming-state acquisition</li>
-                    <li>Dedicated 1-second hardware timer for continuous reporting</li>
-                    <li>Servo position and active motion interval included in the telemetry stream</li>
-                </ul>
-            </div>
-
-            <div class="eb-card">
-                <h3>PC Logging & Analysis</h3>
-                <p>The test computer added absolute timestamps and stored the incoming serial stream as CSV data for numerical analysis.</p>
-                <ul>
-                    <li>Python serial acquisition and timestamping</li>
-                    <li>CSV logs backed up after each test cycle</li>
-                    <li>MATLAB used for numerical processing and final energy analysis</li>
-                    <li>Dynamic integration performed across approximately 90,000 rows per test</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="eb-section">
-        <p class="eb-kicker">TEST METHODOLOGY</p>
-        <h2>Five commercial occupancy profiles, one repeatable hardware platform.</h2>
-        <p>
-            Each profile changed the probability, timing and duration of actuator movement to represent
-            a different real-world traffic pattern. Fitness and shopping scenarios used an 8/8/8 decompression
-            model to represent high-activity, reduced-activity and overnight-off periods, while the remaining
-            profiles used the raw compressed test data as a conservative baseline.
-        </p>
-
-        <div class="eb-two-col">
-            <div class="eb-card">
-                <h3>School</h3>
-                <p>Low movement probability during class periods, followed by very high movement during simulated class changes.</p>
-            </div>
-            <div class="eb-card">
-                <h3>Fitness Centre</h3>
-                <p>Frequent activity checks with a high probability of movement to represent a busy gym environment.</p>
-            </div>
-            <div class="eb-card">
-                <h3>Warehouse</h3>
-                <p>High-activity worst-case model representing semi-continuous employee and equipment movement.</p>
-            </div>
-            <div class="eb-card">
-                <h3>Shopping Centre</h3>
-                <p>High-frequency traffic model designed to represent continuous pedestrian activity.</p>
-            </div>
-            <div class="eb-card">
-                <h3>Parking Garage</h3>
-                <p>Low-probability movement profile tested with both PIR and microwave configurations.</p>
-            </div>
-            <div class="eb-card">
-                <h3>Controlled Variables</h3>
-                <p>Actuator geometry, sensor placement and test-bench layout were held constant so sensor configuration remained the primary variable.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="eb-section">
-        <p class="eb-kicker">RESULTS</p>
-        <h2>Substantial savings across every tested occupancy scenario.</h2>
-        <p>
-            Across the scenario models, estimated energy savings ranged from 35.24% in the high-activity
-            warehouse case to 62.12% in the microwave-sensed parking case. The percentage savings remained
-            consistent when the validated dimming behaviour was scaled across the evaluated fixture variants.
-        </p>
-
-        <div class="eb-results">
-            <div class="eb-result-list">
-                <div class="eb-result-row"><span>School</span><strong>48.97%</strong></div>
-                <div class="eb-result-row"><span>Fitness Centre (adjusted)</span><strong>52.52%</strong></div>
-                <div class="eb-result-row"><span>Warehouse</span><strong>35.24%</strong></div>
-                <div class="eb-result-row"><span>Shopping Centre (adjusted)</span><strong>52.27%</strong></div>
-                <div class="eb-result-row"><span>Parking — PIR</span><strong>49.31%</strong></div>
-                <div class="eb-result-row"><span>Parking — Microwave</span><strong>62.12%</strong></div>
-            </div>
-
-            <figure class="eb-figure">
-                <img src="../assets/images/ecobright-phase1/energy-results-40w35k.png" alt="Projected yearly energy consumption for 40 W 3500 K panel scenarios">
-                <figcaption><strong>Representative annual energy projection</strong>Comparison of always-on baseline energy use versus sensor-controlled operation for the 40 W 3500 K fixture configuration.</figcaption>
-            </figure>
+        <div class="meta-card">
+            <span>ROLE</span>
+            <strong>
+                Research, test-bench development,
+                instrumentation, validation and analysis
+            </strong>
         </div>
 
-        <div class="eb-callout">
-            <strong>Representative facility-scale projection:</strong> for the 40 W 3500 K configuration,
-            the microwave parking scenario projected approximately 204,411 kWh saved, 37,816 kg CO₂ avoided,
-            and CAD $35,771.86 in annual savings when scaled to 1,000 fixtures.
-        </div>
-    </section>
-
-    <section class="eb-section">
-        <p class="eb-kicker">PROJECT RESPONSIBILITIES</p>
-        <h2>Working across mechatronics, test engineering and technical analysis.</h2>
-        <p>
-            As part of a two-student research team, the project required work across the full validation pipeline:
-            physical test-bench development, embedded control, repeatable stimulus generation, data acquisition,
-            commercial scenario modeling, numerical energy analysis and formal engineering documentation.
-        </p>
-
-        <div class="eb-two-col">
-            <div class="eb-card">
-                <h3>System Development</h3>
-                <ul>
-                    <li>Developed and assembled a repeatable occupancy-simulation test bench</li>
-                    <li>Integrated the ESP32, actuator, thermal target and sensor signal path</li>
-                    <li>Maintained controlled sensor geometry across PIR and microwave tests</li>
-                </ul>
-            </div>
-            <div class="eb-card">
-                <h3>Validation & Analysis</h3>
-                <ul>
-                    <li>Implemented scenario-based motion profiles</li>
-                    <li>Captured and processed continuous 1 Hz telemetry</li>
-                    <li>Converted dimming behaviour into energy, cost and carbon projections</li>
-                    <li>Co-authored the final technical validation documentation</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="eb-section">
-        <p class="eb-kicker">ENGINEERING CHALLENGES</p>
-        <h2>Problems that had to be solved before the data meant anything.</h2>
-
-        <div class="eb-two-col">
-            <div class="eb-card">
-                <h3>Repeatable Occupancy Simulation</h3>
-                <p>Human movement is inconsistent. A servo-driven physical target allowed the same movement logic to be reproduced over extended test periods.</p>
-            </div>
-            <div class="eb-card">
-                <h3>PIR-Compatible Stimulus</h3>
-                <p>Visible motion alone was not sufficient for realistic PIR activation. The target required a controlled thermal signature representative of a warm moving object.</p>
-            </div>
-            <div class="eb-card">
-                <h3>Long-Duration Logging</h3>
-                <p>Multi-hour tests required stable 1 Hz acquisition, absolute timestamps and reliable file handling without accumulating timing drift.</p>
-            </div>
-            <div class="eb-card">
-                <h3>Converting Voltage Into Energy</h3>
-                <p>Fixture dimming voltage was normalized against a calibrated reference and numerically integrated with true fixture wattage to estimate energy consumption.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="eb-section">
-        <p class="eb-kicker">PROJECT TIMELINE</p>
-        <h2>From proposal to completed validation.</h2>
-
-        <div class="eb-timeline">
-            <div class="eb-timeline-step"><span>01</span><h3>Research Proposal</h3><p>Defined validation objectives, scenarios, initial CAD layout and expected measurements.</p></div>
-            <div class="eb-timeline-step"><span>02</span><h3>Test-Bench Design</h3><p>Developed the actuator concept, sensing geometry and low-voltage electronics architecture.</p></div>
-            <div class="eb-timeline-step"><span>03</span><h3>Implementation</h3><p>Built the physical stimulus system and integrated the ESP32, sensors, camera and fixture.</p></div>
-            <div class="eb-timeline-step"><span>04</span><h3>Validation Campaign</h3><p>Executed long-duration scenario tests with PIR and microwave configurations.</p></div>
-            <div class="eb-timeline-step"><span>05</span><h3>Analysis & Report</h3><p>Processed telemetry, modeled facility impact and delivered the final technical validation report.</p></div>
-        </div>
-    </section>
-
-    <section class="eb-section">
-        <p class="eb-kicker">TECHNICAL DOCUMENTATION</p>
-        <h2>Engineering documentation produced during the project.</h2>
-
-        <div class="eb-docs">
-            <div class="eb-doc"><span>PROPOSAL</span><h3>Research Proposal</h3><p>Objectives, methodology, CAD concepts and validation plan developed before implementation.</p></div>
-            <div class="eb-doc"><span>VALIDATION</span><h3>Final Technical Report</h3><p>Full experimental setup, test methodology, results, facility projections and conclusions.</p></div>
-            <div class="eb-doc"><span>DATA</span><h3>Test Logs & Analysis</h3><p>Time-series CSV telemetry, scenario-specific logs and numerical energy-analysis outputs.</p></div>
+        <div class="meta-card">
+            <span>TIMELINE</span>
+            <strong>2025–2026</strong>
         </div>
 
-        <div class="eb-restricted">
-            <strong>Documentation note:</strong> the full final validation report contains a restricted-distribution
-            notice for EcoBright and TMU ELIXIR Laboratory stakeholders. This public portfolio therefore presents
-            selected engineering details and results only; internal documentation is not distributed through this site.
+        <div class="meta-card">
+            <span>LAB</span>
+            <strong>
+                ELIXIR Laboratory,
+                Toronto Metropolitan University
+            </strong>
         </div>
-    </section>
 
-    <section class="eb-next">
-        <p>Next Project</p>
-        <a href="daylight-harvesting.html">Automated Daylight Harvesting Validation →</a>
-    </section>
+        <div class="meta-card">
+            <span>STATUS</span>
+            <strong>Completed</strong>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">ENGINEERING OBJECTIVE</p>
+
+    <h2>Making occupancy validation repeatable</h2>
+
+    <p>
+        The project evaluated whether EcoBright’s motion-sensing LED
+        system could reduce unnecessary lighting energy use while
+        following intended dimming and timeout behavior.
+    </p>
+
+    <p>
+        A key challenge was replacing inconsistent human movement
+        with a repeatable physical stimulus. A servo-driven actuator
+        moved a heated anodized-black aluminum target through the
+        sensor field of view, producing physical motion and thermal
+        changes suitable for PIR validation.
+    </p>
+
+    <div class="contribution-box">
+
+        <h3>My Contributions</h3>
+
+        <ul class="bullets">
+            <li>
+                Contributed to the physical test-bench design
+                and implementation.
+            </li>
+
+            <li>
+                Worked on ESP32-based control and instrumentation.
+            </li>
+
+            <li>
+                Supported repeatable occupancy simulation for
+                PIR and microwave sensing.
+            </li>
+
+            <li>
+                Helped structure scenario-based testing and data logging.
+            </li>
+
+            <li>
+                Contributed to energy analysis and final
+                technical documentation.
+            </li>
+        </ul>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">SYSTEM ARCHITECTURE</p>
+
+    <h2>Validation workflow</h2>
+
+    <div class="architecture-stack">
+
+        <div class="architecture-box">
+            Servo-Driven Heated Target
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            PIR / Microwave Sensor
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            EcoBright LED Fixture
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            ESP32 Signal Monitoring
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            Python CSV Logging
+        </div>
+
+        <div class="architecture-arrow">→</div>
+
+        <div class="architecture-box">
+            MATLAB Analysis
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">DESIGN EVOLUTION</p>
+
+    <h2>From CAD concept to physical test bench</h2>
+
+
+    <div class="image-grid">
+
+        <div class="figure-card">
+
+            <img
+                src="cad-test-setup-rear.jpeg"
+                alt="CAD concept of test setup"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Early Test-Environment CAD</strong>
+
+                <p>
+                    Proposal-stage geometry for the sensor,
+                    tables and moving stimulus beam.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="figure-card">
+
+            <img
+                src="cad-servo-mechanism.jpeg"
+                alt="CAD actuator mechanism"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Actuator Mechanism</strong>
+
+                <p>
+                    Detailed servo-driven mechanism used to
+                    generate sweeping motion through the sensing region.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="figure-card">
+
+            <img
+                src="cad-actuator-beam.jpeg"
+                alt="CAD actuator beam"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Actuator Beam Concept</strong>
+
+                <p>
+                    Early view of the rotating beam used to
+                    create repeatable simulated occupancy events.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="figure-card">
+
+            <img
+                src="cad-sensor-view.jpeg"
+                alt="Sensor point of view CAD"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Sensor Field-of-View Concept</strong>
+
+                <p>
+                    Sensor-perspective visualization used to
+                    reason about target entry into the detection region.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">PHYSICAL SETUP</p>
+
+    <h2>Controlled laboratory environment</h2>
+
+    <p>
+        The final system was built beneath a table-based enclosure.
+        The sensor was mounted downward to approximate a ceiling-mounted
+        installation, while the fixture, actuator and monitoring
+        equipment remained fixed to preserve geometry between tests.
+    </p>
+
+
+    <div class="image-grid">
+
+        <div class="figure-card">
+
+            <img
+                src="test-setup-schematic.png"
+                alt="Schematic test layout"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Final Test Layout</strong>
+
+                <p>
+                    Schematic showing sensor location,
+                    LED panel and actuator-based thermal stimulus.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="figure-card">
+
+            <img
+                src="physical-test-setup.jpeg"
+                alt="Physical test setup"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Physical Test Bench</strong>
+
+                <p>
+                    Actual laboratory implementation
+                    of the validation setup.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">ELECTRICAL & EMBEDDED SYSTEM</p>
+
+    <h2>ESP32 control and signal monitoring</h2>
+
+    <p>
+        The low-voltage system used an ESP32 WROVER-E,
+        servo control, sensor signal monitoring through a
+        voltage divider, a shared ground strategy and a calibrated
+        reference for fixture dimming-state tracking.
+    </p>
+
+
+    <div class="image-grid">
+
+        <div class="figure-card">
+
+            <img
+                src="electrical-diagram.png"
+                alt="Electrical diagram"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Electrical Diagram</strong>
+
+                <p>
+                    ESP32, servo path, sensor signal
+                    interface and support circuitry.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="figure-card">
+
+            <img
+                src="physical-electronics.jpeg"
+                alt="Physical electronics"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Physical Electronics</strong>
+
+                <p>
+                    Bench-level implementation of the
+                    embedded control electronics.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">TEST METHODOLOGY</p>
+
+    <h2>Five commercial occupancy profiles</h2>
+
+    <div class="scenario-grid">
+
+        <div class="scenario-card">
+            <h3>School</h3>
+            <p>
+                Lower classroom activity separated by
+                higher-activity class-change periods.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>Fitness Centre</h3>
+            <p>
+                Frequent activity with decompressed
+                day-cycle modeling.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>Warehouse</h3>
+            <p>
+                Semi-constant movement used as a
+                conservative high-activity case.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>Shopping Centre</h3>
+            <p>
+                Frequent traffic with adjusted
+                day-cycle modeling.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>Parking Garage</h3>
+            <p>
+                Low-frequency movement tested with
+                both PIR and microwave configurations.
+            </p>
+        </div>
+
+        <div class="scenario-card">
+            <h3>Data Capture</h3>
+            <p>
+                Continuous 1 Hz logging with
+                Python timestamping and CSV storage.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">RESULTS</p>
+
+    <h2>Validated control behavior and modeled savings</h2>
+
+    <p>
+        Across the tested commercial scenarios,
+        modeled energy savings ranged from
+        <span class="inline-highlight">35.24%</span>
+        to
+        <span class="inline-highlight">62.12%</span>
+        relative to an always-on baseline.
+    </p>
+
+
+    <div class="results-grid">
+
+        <div class="result-card">
+            <h3>35.24–62.12%</h3>
+            <p>
+                Scenario-dependent modeled
+                energy-savings range.
+            </p>
+        </div>
+
+        <div class="result-card">
+            <h3>1 Hz</h3>
+            <p>
+                Continuous hardware-event
+                logging during tests.
+            </p>
+        </div>
+
+        <div class="result-card">
+            <h3>1,000 Fixtures</h3>
+            <p>
+                Commercial scaling used for
+                facility-level projections.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="image-grid" style="margin-top:26px">
+
+        <div class="figure-card">
+
+            <img
+                src="energy-results-40w35k.png"
+                alt="Representative energy results"
+            >
+
+            <div class="figure-caption">
+
+                <strong>Representative Energy Results</strong>
+
+                <p>
+                    Example yearly modeled energy comparison for the
+                    occupancy-controlled fixture versus the
+                    always-on baseline.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="note-box">
+
+            <h3>Engineering Takeaway</h3>
+
+            <p>
+                The same physical test platform could be reused
+                across multiple occupancy profiles, allowing the
+                sensing and dimming logic to be evaluated under
+                consistent geometry while changing only the
+                simulated traffic behavior.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="case-section">
+
+    <p class="section-label">DOCUMENTATION</p>
+
+    <h2>Technical reporting</h2>
+
+    <div class="doc-grid">
+
+        <div class="doc-card">
+
+            <span>PROPOSAL</span>
+
+            <h3>Initial Research Proposal</h3>
+
+            <p>
+                Defined the validation objective,
+                scenario structure, concept CAD and measurement plan.
+            </p>
+
+        </div>
+
+
+        <div class="doc-card">
+
+            <span>FINAL REPORT</span>
+
+            <h3>Stakeholder Validation Report</h3>
+
+            <p>
+                Captured the completed setup,
+                methodology, results and commercial projections.
+            </p>
+
+        </div>
+
+
+        <div class="doc-card">
+
+            <span>CONFIDENTIALITY</span>
+
+            <h3>Selected Public Content</h3>
+
+            <p>
+                The complete final report is not reproduced publicly.
+                This page presents selected engineering content
+                for portfolio use.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="next-project">
+
+    <p>Next Project</p>
+
+    <a href="daylight-harvesting.html">
+        Automated Daylight Harvesting Validation Platform →
+    </a>
+
+</section>
 
 </main>
+
 
 <footer>
     <p>Designed & built by Hassan Iqbal</p>
