@@ -3,14 +3,620 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Hand-Gesture Controlled Turret | Hassan Iqbal</title>
 
+    <meta
+        name="description"
+        content="Raspberry Pi computer vision and Arduino robotic turret developed by Hassan Iqbal using Python, OpenCV, MediaPipe, UART communication and three-servo control."
+    >
+
     <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* =========================================================
+           TURRET PAGE
+           Intentionally different from other portfolio pages
+           ========================================================= */
+
+        .turret-page {
+            width: min(1180px, 92%);
+            margin: auto;
+        }
+
+
+        /* ---------- HERO ---------- */
+
+        .turret-hero {
+            padding: 90px 0 70px;
+        }
+
+        .turret-kicker {
+            color: #4fc3f7;
+            font-size: .76rem;
+            letter-spacing: 2.4px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .turret-title {
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            line-height: .94;
+            max-width: 1050px;
+            letter-spacing: -3px;
+        }
+
+        .turret-title span {
+            color: #4fc3f7;
+        }
+
+        .turret-subtitle {
+            margin-top: 28px;
+            max-width: 760px;
+            font-size: 1.2rem;
+            color: #a9b4c0;
+            line-height: 1.8;
+        }
+
+        .turret-techline {
+            margin-top: 28px;
+            color: #72818f;
+            font-size: .92rem;
+            letter-spacing: .4px;
+        }
+
+
+        /* ---------- HERO PHOTO ---------- */
+
+        .turret-hero-photo {
+            width: 100%;
+            height: min(680px, 65vw);
+            min-height: 430px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 18px;
+            margin-top: 50px;
+            display: block;
+        }
+
+        .photo-note {
+            color: #687785;
+            font-size: .82rem;
+            margin-top: 10px;
+        }
+
+
+        /* ---------- BIG STATEMENT ---------- */
+
+        .turret-statement {
+            padding: 120px 0;
+            max-width: 930px;
+        }
+
+        .turret-statement p:first-child {
+            color: #4fc3f7;
+            font-size: .76rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .turret-statement h2 {
+            font-size: clamp(2.5rem, 5vw, 4.6rem);
+            line-height: 1.08;
+            font-weight: 650;
+        }
+
+        .turret-statement h2 span {
+            color: #788896;
+        }
+
+
+        /* ---------- GESTURES ---------- */
+
+        .gesture-section {
+            padding: 90px 0 120px;
+            border-top: 1px solid #1d2832;
+        }
+
+        .gesture-heading {
+            display: grid;
+            grid-template-columns: .6fr 1.4fr;
+            gap: 60px;
+            margin-bottom: 70px;
+        }
+
+        .gesture-heading p {
+            color: #4fc3f7;
+            letter-spacing: 2px;
+            font-size: .76rem;
+            font-weight: 700;
+        }
+
+        .gesture-heading h2 {
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            line-height: 1.08;
+        }
+
+        .gesture-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+
+        .gesture {
+            padding: 12px 35px 38px 0;
+            border-top: 2px solid #263440;
+        }
+
+        .gesture + .gesture {
+            padding-left: 35px;
+            border-left: 1px solid #263440;
+        }
+
+        .gesture-number {
+            display: block;
+            color: #4fc3f7;
+            font-size: .76rem;
+            letter-spacing: 1.5px;
+            margin-top: 17px;
+        }
+
+        .gesture h3 {
+            font-size: 2rem;
+            margin: 25px 0 10px;
+        }
+
+        .gesture strong {
+            color: #4fc3f7;
+        }
+
+        .gesture p {
+            color: #8997a4;
+            max-width: 300px;
+        }
+
+
+        /* ---------- CAMERA ---------- */
+
+        .vision-section {
+            padding: 115px 0;
+            border-top: 1px solid #1d2832;
+        }
+
+        .vision-copy {
+            max-width: 730px;
+            margin-bottom: 45px;
+        }
+
+        .vision-copy .label {
+            color: #4fc3f7;
+            font-size: .76rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .vision-copy h2 {
+            font-size: clamp(2.6rem, 5vw, 4.2rem);
+            margin: 12px 0 20px;
+            line-height: 1.06;
+        }
+
+        .vision-copy p {
+            color: #9aa8b4;
+            font-size: 1.06rem;
+        }
+
+        .vision-image {
+            width: 100%;
+            max-height: 850px;
+            object-fit: contain;
+            display: block;
+            background: #0b1015;
+            border-radius: 14px;
+        }
+
+        .vision-caption {
+            display: flex;
+            justify-content: space-between;
+            gap: 25px;
+            margin-top: 15px;
+            color: #697986;
+            font-size: .88rem;
+        }
+
+
+        /* ---------- CONTROL FLOW ---------- */
+
+        .flow-section {
+            padding: 120px 0;
+        }
+
+        .flow-title {
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            margin-bottom: 60px;
+        }
+
+        .flow-line {
+            display: grid;
+            grid-template-columns:
+                1fr auto
+                1fr auto
+                1fr auto
+                1fr auto
+                1fr;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .flow-node {
+            min-height: 140px;
+            border-top: 2px solid #263440;
+            padding-top: 20px;
+        }
+
+        .flow-node small {
+            color: #4fc3f7;
+            font-size: .7rem;
+            letter-spacing: 1.4px;
+        }
+
+        .flow-node h3 {
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+
+        .flow-node p {
+            margin-top: 8px;
+            color: #778692;
+            font-size: .86rem;
+        }
+
+        .flow-arrow {
+            color: #4fc3f7;
+            font-size: 1.5rem;
+        }
+
+
+        /* ---------- PI VS ARDUINO ---------- */
+
+        .brain-muscle {
+            padding: 110px 0;
+            border-top: 1px solid #1d2832;
+        }
+
+        .brain-muscle-title {
+            margin-bottom: 55px;
+        }
+
+        .brain-muscle-title p {
+            color: #4fc3f7;
+            letter-spacing: 2px;
+            font-size: .76rem;
+            font-weight: 700;
+        }
+
+        .brain-muscle-title h2 {
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            max-width: 800px;
+            line-height: 1.08;
+            margin-top: 12px;
+        }
+
+        .processor-split {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 50px;
+        }
+
+        .processor-divider {
+            background: #24303a;
+        }
+
+        .processor-side {
+            padding: 20px 0;
+        }
+
+        .processor-side .big-word {
+            font-size: clamp(3.5rem, 7vw, 6rem);
+            font-weight: 800;
+            line-height: 1;
+            color: #18232d;
+        }
+
+        .processor-side h3 {
+            margin-top: -14px;
+            font-size: 1.8rem;
+        }
+
+        .processor-side p {
+            color: #8997a4;
+            margin-top: 15px;
+            max-width: 430px;
+        }
+
+        .processor-side ul {
+            margin-top: 25px;
+            padding-left: 18px;
+            color: #a9b4c0;
+            line-height: 1.9;
+        }
+
+
+        /* ---------- WIRING ---------- */
+
+        .wiring-section {
+            padding: 120px 0;
+        }
+
+        .wiring-header {
+            max-width: 720px;
+        }
+
+        .wiring-header p {
+            color: #4fc3f7;
+            font-size: .76rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .wiring-header h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.08;
+            margin-top: 12px;
+        }
+
+        .wiring-layout {
+            display: grid;
+            grid-template-columns: .85fr 1.15fr;
+            gap: 70px;
+            margin-top: 60px;
+            align-items: start;
+        }
+
+        .pin-map {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: .94rem;
+        }
+
+        .pin-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            padding: 17px 0;
+            border-bottom: 1px solid #1e2933;
+        }
+
+        .pin-source {
+            color: #e6edf3;
+        }
+
+        .pin-arrow {
+            color: #4fc3f7;
+        }
+
+        .pin-dest {
+            color: #8c9ba7;
+            text-align: right;
+        }
+
+        .wiring-image {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+            background: #121820;
+        }
+
+
+        /* ---------- WORKSHOP STORY ---------- */
+
+        .workshop-section {
+            padding: 130px 0;
+            border-top: 1px solid #1d2832;
+        }
+
+        .workshop-layout {
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 65px;
+            align-items: center;
+        }
+
+        .workshop-photo {
+            width: 100%;
+            display: block;
+            border-radius: 16px;
+        }
+
+        .workshop-copy p:first-child {
+            color: #4fc3f7;
+            letter-spacing: 2px;
+            font-size: .76rem;
+            font-weight: 700;
+        }
+
+        .workshop-copy h2 {
+            font-size: clamp(2.5rem, 4vw, 3.8rem);
+            line-height: 1.08;
+            margin: 14px 0 22px;
+        }
+
+        .workshop-copy p:not(:first-child) {
+            color: #9aa8b4;
+            margin-bottom: 18px;
+        }
+
+        .workshop-topics {
+            margin-top: 30px;
+            font-size: .9rem;
+            color: #748491;
+            line-height: 2;
+        }
+
+
+        /* ---------- CALIBRATION ---------- */
+
+        .calibration-section {
+            padding: 100px 0;
+        }
+
+        .calibration-layout {
+            display: grid;
+            grid-template-columns: .7fr 1.3fr;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .calibration-copy h2 {
+            font-size: clamp(2.3rem, 4vw, 3.5rem);
+            line-height: 1.1;
+        }
+
+        .calibration-copy p {
+            color: #95a3af;
+            margin-top: 20px;
+        }
+
+        .calibration-image {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+        }
+
+
+        /* ---------- DEMO ---------- */
+
+        .demo-section {
+            padding: 120px 0;
+            border-top: 1px solid #1d2832;
+        }
+
+        .demo-header h2 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            margin-bottom: 15px;
+        }
+
+        .demo-header p {
+            color: #84939f;
+            max-width: 650px;
+        }
+
+        .demo-videos {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .demo-video video {
+            width: 100%;
+            display: block;
+            background: #000;
+            border-radius: 12px;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        .demo-video p {
+            color: #71818d;
+            margin-top: 12px;
+            font-size: .88rem;
+        }
+
+
+        /* ---------- CLOSING ---------- */
+
+        .turret-closing {
+            padding: 140px 0 130px;
+            max-width: 950px;
+        }
+
+        .turret-closing p:first-child {
+            color: #4fc3f7;
+            font-size: .76rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .turret-closing h2 {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            line-height: 1.06;
+            margin-top: 15px;
+        }
+
+        .turret-closing .closing-copy {
+            margin-top: 30px;
+            max-width: 720px;
+            color: #95a3af;
+            font-size: 1.05rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 45px;
+            color: #4fc3f7;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+
+        /* ---------- MOBILE ---------- */
+
+        @media (max-width: 850px) {
+
+            .gesture-heading,
+            .workshop-layout,
+            .calibration-layout,
+            .wiring-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .gesture-row {
+                grid-template-columns: 1fr;
+            }
+
+            .gesture {
+                border-left: 0 !important;
+                padding: 25px 0 !important;
+            }
+
+            .processor-split {
+                grid-template-columns: 1fr;
+            }
+
+            .processor-divider {
+                height: 1px;
+            }
+
+            .flow-line {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+                width: fit-content;
+                margin: auto;
+            }
+
+            .demo-videos {
+                grid-template-columns: 1fr;
+            }
+
+            .turret-title {
+                letter-spacing: -1.5px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
+
 <body>
+
 
 <nav>
 
@@ -29,342 +635,696 @@
 </nav>
 
 
-<main class="project-page">
-
-<section class="project-hero">
-
-    <p class="section-label">
-        ROBOTICS • COMPUTER VISION • EMBEDDED CONTROL
-    </p>
-
-    <h1>Hand-Gesture Controlled Robotic Turret</h1>
-
-    <p class="project-summary">
-        A Raspberry Pi and Arduino robotic platform that uses
-        OpenCV and MediaPipe hand landmarks to convert gestures
-        and hand position into multi-servo motion and trigger control.
-    </p>
-
-    <div class="tags">
-        <span>Raspberry Pi</span>
-        <span>Python</span>
-        <span>OpenCV</span>
-        <span>MediaPipe</span>
-        <span>Arduino</span>
-        <span>UART / USB Serial</span>
-        <span>Servo Control</span>
-    </div>
-
-</section>
+<main class="turret-page">
 
 
-<section class="case-section">
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
 
-    <p class="section-label">SYSTEM OVERVIEW</p>
+    <section class="turret-hero">
 
-    <h2>Vision on the Pi, actuation on the Arduino</h2>
+        <p class="turret-kicker">
+            RASPBERRY PI / COMPUTER VISION / ROBOTICS
+        </p>
 
-    <p>
-        The Raspberry Pi processes the camera stream,
-        detects a single hand using MediaPipe and maps
-        palm position and finger-state information into
-        X, Y and Z servo commands.
-    </p>
+        <h1 class="turret-title">
+            Control a robot
+            <span>with your hand.</span>
+        </h1>
 
-    <p>
-        Commands are sent to the Arduino over serial,
-        while the Raspberry Pi directly controls the laser GPIO.
-    </p>
+        <p class="turret-subtitle">
+            I built a camera-driven robotic turret that interprets
+            hand position and gestures using OpenCV and MediaPipe,
+            then translates them into physical servo movement through
+            a Raspberry Pi and Arduino control architecture.
+        </p>
 
+        <p class="turret-techline">
+            Python · OpenCV · MediaPipe · Raspberry Pi · Arduino · UART · GPIO · PWM
+        </p>
 
-    <div class="architecture-stack">
+        <img
+            class="turret-hero-photo"
+            src="turret-workshop.jpg"
+            alt="Students assembling and testing the Raspberry Pi robotic turret"
+        >
 
-        <div class="architecture-box">
-            USB Camera
-        </div>
+        <p class="photo-note">
+            Raspberry Pi workshop — hardware assembly and system integration.
+        </p>
 
-        <div class="architecture-arrow">→</div>
-
-        <div class="architecture-box">
-            OpenCV
-        </div>
-
-        <div class="architecture-arrow">→</div>
-
-        <div class="architecture-box">
-            MediaPipe Hand Tracking
-        </div>
-
-        <div class="architecture-arrow">→</div>
-
-        <div class="architecture-box">
-            Gesture / Coordinate Mapping
-        </div>
-
-        <div class="architecture-arrow">→</div>
-
-        <div class="architecture-box">
-            Serial Command
-        </div>
-
-        <div class="architecture-arrow">→</div>
-
-        <div class="architecture-box">
-            Arduino + 3 Servos
-        </div>
-
-    </div>
-
-</section>
+    </section>
 
 
-<section class="case-section">
 
-    <p class="section-label">HARDWARE CONNECTIONS</p>
+    <!-- =====================================================
+         STATEMENT
+         ===================================================== -->
 
-    <h2>Pi, Arduino, servos and laser</h2>
+    <section class="turret-statement">
 
-    <table class="spec-table">
+        <p>THE IDEA</p>
 
-        <tr>
-            <td>Raspberry Pi → Arduino</td>
-            <td>
-                GPIO 8 TX to Arduino RX,
-                with shared ground
-            </td>
-        </tr>
+        <h2>
+            The camera doesn't just see a hand.
+            <span>
+                It decides what the hand is asking the machine to do.
+            </span>
+        </h2>
 
-        <tr>
-            <td>X Servo</td>
-            <td>Arduino PWM pin 3</td>
-        </tr>
-
-        <tr>
-            <td>Y Servo</td>
-            <td>Arduino PWM pin 5</td>
-        </tr>
-
-        <tr>
-            <td>Z Servo</td>
-            <td>Arduino PWM pin 6</td>
-        </tr>
-
-        <tr>
-            <td>Laser</td>
-            <td>Raspberry Pi GPIO 17</td>
-        </tr>
-
-        <tr>
-            <td>Serial Rate</td>
-            <td>115200 baud</td>
-        </tr>
-
-    </table>
-
-</section>
+    </section>
 
 
-<section class="case-section">
 
-    <p class="section-label">GESTURE LOGIC</p>
+    <!-- =====================================================
+         GESTURES
+         ===================================================== -->
 
-    <h2>Natural hand input mapped to different control modes</h2>
+    <section class="gesture-section">
 
-    <div class="scenario-grid">
-
-        <div class="scenario-card">
-
-            <h3>One Finger</h3>
+        <div class="gesture-heading">
 
             <p>
-                Confirmed one-finger detection enables X-axis
-                control using filtered palm X position.
+                HUMAN → MACHINE
+            </p>
+
+            <h2>
+                Three gestures.
+                Three different actions.
+            </h2>
+
+        </div>
+
+
+        <div class="gesture-row">
+
+            <div class="gesture">
+
+                <span class="gesture-number">01</span>
+
+                <h3>
+                    <strong>One</strong> finger
+                </h3>
+
+                <p>
+                    Horizontal hand position becomes the target
+                    for the turret's X-axis movement.
+                </p>
+
+            </div>
+
+
+            <div class="gesture">
+
+                <span class="gesture-number">02</span>
+
+                <h3>
+                    <strong>Two</strong> fingers
+                </h3>
+
+                <p>
+                    Vertical hand position controls the
+                    Y-axis while the gesture remains active.
+                </p>
+
+            </div>
+
+
+            <div class="gesture">
+
+                <span class="gesture-number">03</span>
+
+                <h3>
+                    Closed <strong>fist</strong>
+                </h3>
+
+                <p>
+                    Holding a fist activates the timed
+                    Z-axis trigger sequence.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CAMERA VIEW
+         ===================================================== -->
+
+    <section class="vision-section">
+
+        <div class="vision-copy">
+
+            <p class="label">
+                WHAT THE COMPUTER SEES
+            </p>
+
+            <h2>
+                21 hand landmarks become control data.
+            </h2>
+
+            <p>
+                MediaPipe tracks the joints and fingertips in the camera
+                image. The Python program uses the landmark geometry to
+                count raised fingers, calculate palm position, choose a
+                control mode and generate servo targets.
             </p>
 
         </div>
 
 
-        <div class="scenario-card">
+        <img
+            class="vision-image"
+            src="turret-hand.jpg"
+            alt="MediaPipe hand landmark tracking used to control the robotic turret"
+        >
 
-            <h3>Two Fingers</h3>
+
+        <div class="vision-caption">
+
+            <span>
+                Live OpenCV / MediaPipe interface
+            </span>
+
+            <span>
+                X • Y • Z • gesture state • trigger state
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FLOW
+         ===================================================== -->
+
+    <section class="flow-section">
+
+        <p class="turret-kicker">
+            INSIDE THE LOOP
+        </p>
+
+        <h2 class="flow-title">
+            From camera frame to physical movement.
+        </h2>
+
+
+        <div class="flow-line">
+
+            <div class="flow-node">
+                <small>01</small>
+                <h3>Capture</h3>
+                <p>OpenCV reads the live camera frame.</p>
+            </div>
+
+            <div class="flow-arrow">→</div>
+
+
+            <div class="flow-node">
+                <small>02</small>
+                <h3>Detect</h3>
+                <p>MediaPipe locates hand landmarks.</p>
+            </div>
+
+            <div class="flow-arrow">→</div>
+
+
+            <div class="flow-node">
+                <small>03</small>
+                <h3>Interpret</h3>
+                <p>Python determines gesture and position.</p>
+            </div>
+
+            <div class="flow-arrow">→</div>
+
+
+            <div class="flow-node">
+                <small>04</small>
+                <h3>Command</h3>
+                <p>X, Y and Z values travel over serial.</p>
+            </div>
+
+            <div class="flow-arrow">→</div>
+
+
+            <div class="flow-node">
+                <small>05</small>
+                <h3>Actuate</h3>
+                <p>Arduino drives the three servo channels.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PI VS ARDUINO
+         ===================================================== -->
+
+    <section class="brain-muscle">
+
+        <div class="brain-muscle-title">
 
             <p>
-                Confirmed two-finger detection enables Y-axis
-                control using filtered palm Y position.
+                WHY TWO COMPUTERS?
+            </p>
+
+            <h2>
+                One handles intelligence.
+                The other handles motion.
+            </h2>
+
+        </div>
+
+
+        <div class="processor-split">
+
+
+            <div class="processor-side">
+
+                <div class="big-word">
+                    BRAIN
+                </div>
+
+                <h3>Raspberry Pi</h3>
+
+                <p>
+                    Handles the computationally heavier software stack
+                    and decides what action the robot should take.
+                </p>
+
+                <ul>
+                    <li>Linux environment</li>
+                    <li>Python control program</li>
+                    <li>OpenCV camera interface</li>
+                    <li>MediaPipe hand tracking</li>
+                    <li>Gesture interpretation</li>
+                    <li>GPIO laser control</li>
+                </ul>
+
+            </div>
+
+
+            <div class="processor-divider"></div>
+
+
+            <div class="processor-side">
+
+                <div class="big-word">
+                    MUSCLE
+                </div>
+
+                <h3>Arduino</h3>
+
+                <p>
+                    Receives the requested positions and provides the
+                    dedicated PWM outputs needed by the mechanical system.
+                </p>
+
+                <ul>
+                    <li>X servo — pin 3</li>
+                    <li>Y servo — pin 5</li>
+                    <li>Z servo — pin 6</li>
+                    <li>Angle limiting</li>
+                    <li>Servo actuation</li>
+                    <li>115200-baud communication</li>
+                </ul>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         WIRING
+         ===================================================== -->
+
+    <section class="wiring-section">
+
+        <div class="wiring-header">
+
+            <p>
+                HARDWARE CONNECTIONS
+            </p>
+
+            <h2>
+                The electrical path behind the movement.
+            </h2>
+
+        </div>
+
+
+        <div class="wiring-layout">
+
+
+            <div class="pin-map">
+
+                <div class="pin-row">
+
+                    <span class="pin-source">
+                        Pi TX
+                    </span>
+
+                    <span class="pin-arrow">
+                        →
+                    </span>
+
+                    <span class="pin-dest">
+                        Arduino RX
+                    </span>
+
+                </div>
+
+
+                <div class="pin-row">
+
+                    <span class="pin-source">
+                        Pi GND
+                    </span>
+
+                    <span class="pin-arrow">
+                        →
+                    </span>
+
+                    <span class="pin-dest">
+                        Common Ground
+                    </span>
+
+                </div>
+
+
+                <div class="pin-row">
+
+                    <span class="pin-source">
+                        Arduino D3
+                    </span>
+
+                    <span class="pin-arrow">
+                        →
+                    </span>
+
+                    <span class="pin-dest">
+                        X Servo
+                    </span>
+
+                </div>
+
+
+                <div class="pin-row">
+
+                    <span class="pin-source">
+                        Arduino D5
+                    </span>
+
+                    <span class="pin-arrow">
+                        →
+                    </span>
+
+                    <span class="pin-dest">
+                        Y Servo
+                    </span>
+
+                </div>
+
+
+                <div class="pin-row">
+
+                    <span class="pin-source">
+                        Arduino D6
+                    </span>
+
+                    <span class="pin-arrow">
+                        →
+                    </span>
+
+                    <span class="pin-dest">
+                        Z Servo
+                    </span>
+
+                </div>
+
+
+                <div class="pin-row">
+
+                    <span class="pin-source">
+                        Pi GPIO 17
+                    </span>
+
+                    <span class="pin-arrow">
+                        →
+                    </span>
+
+                    <span class="pin-dest">
+                        Laser Signal
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <img
+                class="wiring-image"
+                src="turret-servo-wiring.png"
+                alt="Arduino servo wiring and external power distribution"
+            >
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         WORKSHOP
+         ===================================================== -->
+
+    <section class="workshop-section">
+
+        <div class="workshop-layout">
+
+
+            <img
+                class="workshop-photo"
+                src="turret-workshop.jpg"
+                alt="Raspberry Pi workshop participants building the robotic turret"
+            >
+
+
+            <div class="workshop-copy">
+
+                <p>
+                    FROM PROJECT → WORKSHOP
+                </p>
+
+                <h2>
+                    Building it was only half the project.
+                </h2>
+
+                <p>
+                    I later used the system as the centerpiece of a
+                    hands-on Raspberry Pi workshop through the
+                    Mechatronics Course Union.
+                </p>
+
+                <p>
+                    Instead of only demonstrating the finished robot,
+                    the workshop walked students through the entire stack:
+                    computing architecture, GPIO, UART, Arduino control,
+                    servo wiring, computer vision and calibration.
+                </p>
+
+
+                <div class="workshop-topics">
+
+                    MICROPROCESSORS VS MICROCONTROLLERS<br>
+                    RASPBERRY PI GPIO<br>
+                    UART COMMUNICATION<br>
+                    ARDUINO PWM<br>
+                    OPENCV + MEDIAPIPE<br>
+                    GESTURE LOGIC<br>
+                    SERVO CALIBRATION
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CALIBRATION
+         ===================================================== -->
+
+    <section class="calibration-section">
+
+        <div class="calibration-layout">
+
+
+            <div class="calibration-copy">
+
+                <p class="turret-kicker">
+                    PHYSICAL CALIBRATION
+                </p>
+
+                <h2>
+                    Software angles mean nothing if the mechanism
+                    isn't physically aligned.
+                </h2>
+
+                <p>
+                    Servo arms were centered and repositioned when
+                    necessary so the programmed neutral positions matched
+                    the actual mechanical geometry of the turret.
+                </p>
+
+            </div>
+
+
+            <img
+                class="calibration-image"
+                src="turret-calibration.png"
+                alt="Turret servo operation and calibration documentation"
+            >
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         VIDEO
+         ===================================================== -->
+
+    <section class="demo-section">
+
+        <div class="demo-header">
+
+            <p class="turret-kicker">
+                SEE IT RUN
+            </p>
+
+            <h2>
+                From gestures to motion.
+            </h2>
+
+            <p>
+                These clips show the finished system responding
+                physically to the computer-vision control logic.
             </p>
 
         </div>
 
 
-        <div class="scenario-card">
+        <div class="demo-videos">
 
-            <h3>Closed Fist</h3>
 
-            <p>
-                A held fist starts a timed trigger sequence
-                that drives the Z-axis firing servo forward,
-                then returns it.
-            </p>
+            <div class="demo-video">
+
+                <video
+                    controls
+                    playsinline
+                    preload="metadata"
+                >
+
+                    <source
+                        src="turret-demo.mp4"
+                        type="video/mp4"
+                    >
+
+                </video>
+
+                <p>
+                    Gesture-driven X/Y movement demonstration.
+                </p>
+
+            </div>
+
+
+            <div class="demo-video">
+
+                <video
+                    controls
+                    playsinline
+                    preload="metadata"
+                >
+
+                    <source
+                        src="turret-fire.mp4"
+                        type="video/mp4"
+                    >
+
+                </video>
+
+                <p>
+                    Closed-fist trigger / firing demonstration.
+                </p>
+
+            </div>
+
 
         </div>
 
-
-        <div class="scenario-card">
-
-            <h3>No Hand</h3>
-
-            <p>
-                The laser is turned off and the trigger servo
-                is returned to its back position.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
+    </section>
 
 
-<section class="case-section">
 
-    <p class="section-label">CONTROL DETAILS</p>
+    <!-- =====================================================
+         END
+         ===================================================== -->
 
-    <h2>Filtering, limits and command rate</h2>
+    <section class="turret-closing">
 
-    <p>
-        The Python program applies exponential filtering to X and Y
-        hand coordinates before converting them to servo angles.
-        The Arduino then clamps received angles to configured
-        mechanical limits before issuing servo commands.
-    </p>
+        <p>
+            WHAT THIS PROJECT BROUGHT TOGETHER
+        </p>
 
+        <h2>
+            Computer vision.
+            Embedded control.
+            Electronics.
+            Mechanics.
+            And teaching others how they connect.
+        </h2>
 
-    <div class="results-grid">
+        <p class="closing-copy">
+            The most valuable part of the project was not any one
+            component. It was integrating a camera, Linux computer,
+            vision pipeline, communication link, microcontroller and
+            physical mechanism into one working system — then turning
+            that system into something other students could build and understand.
+        </p>
 
-        <div class="result-card">
-            <h3>30 Hz</h3>
-            <p>
-                Configured command-send target
-                in the Raspberry Pi control loop.
-            </p>
-        </div>
+        <a
+            class="back-link"
+            href="projects.html"
+        >
+            ← Back to Featured Work
+        </a>
 
-        <div class="result-card">
-            <h3>3 Servos</h3>
-            <p>
-                X, Y and Z channels for multi-axis
-                motion and trigger actuation.
-            </p>
-        </div>
+    </section>
 
-        <div class="result-card">
-            <h3>115200</h3>
-            <p>
-                Serial communication baud rate
-                between Raspberry Pi and Arduino.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="case-section">
-
-    <p class="section-label">SOFTWARE PIPELINE</p>
-
-    <h2>High-level control flow</h2>
-
-    <div class="code-flow">Camera frame
-   ↓
-Mirror + RGB conversion
-   ↓
-MediaPipe hand landmarks
-   ↓
-Finger counting + palm position
-   ↓
-Mode selection (X / Y / trigger)
-   ↓
-Filtered coordinate-to-angle mapping
-   ↓
-"x,y,z" serial command
-   ↓
-Arduino angle clamp + servo.write()</div>
-
-</section>
-
-
-<section class="case-section">
-
-    <p class="section-label">ENGINEERING CHALLENGES</p>
-
-    <h2>What the system had to solve</h2>
-
-    <div class="challenge-grid">
-
-        <div class="challenge-card">
-
-            <h3>Noisy Hand Coordinates</h3>
-
-            <p>
-                Raw vision coordinates fluctuate frame-to-frame,
-                so filtering was needed before servo mapping.
-            </p>
-
-        </div>
-
-
-        <div class="challenge-card">
-
-            <h3>Gesture Confirmation</h3>
-
-            <p>
-                One- and two-finger states are confirmed
-                across multiple frames to reduce accidental
-                mode switching.
-            </p>
-
-        </div>
-
-
-        <div class="challenge-card">
-
-            <h3>Mechanical Limits</h3>
-
-            <p>
-                Servo ranges are clamped in firmware to avoid
-                commanding unsafe positions.
-            </p>
-
-        </div>
-
-
-        <div class="challenge-card">
-
-            <h3>Distributed Control</h3>
-
-            <p>
-                The project splits high-level vision processing
-                and low-level servo control across two computing platforms.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="next-project">
-
-    <p>Next Project</p>
-
-    <a href="pcb.html">
-        RP2040 Multi-Sensor Embedded Board →
-    </a>
-
-</section>
 
 </main>
 
@@ -373,5 +1333,7 @@ Arduino angle clamp + servo.write()</div>
     <p>Designed & built by Hassan Iqbal</p>
 </footer>
 
+
 </body>
+
 </html>
