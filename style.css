@@ -845,3 +845,25 @@ footer {
 .featured-project-visual .project-media img{object-fit:contain}
 .project.featured .project-media img{object-fit:cover}
 @media(max-width:700px){.featured-project-visual .project-media{min-height:210px;height:auto}}
+
+
+/* Approved portfolio design: profile photograph, compact daylight diagram, complete robotic hand image */
+.hero.hero-with-photo{width:100%;max-width:none;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:48px;align-items:center}
+.hero.hero-with-photo .hero-copy{min-width:0}
+.hero.hero-with-photo .hero-copy h1{font-size:clamp(3.3rem,7.5vw,6.5rem)}
+.hero.hero-with-photo .hero-copy h2{font-size:clamp(1.6rem,3.1vw,2.5rem)}
+.hero-portrait-wrap{display:flex;align-items:center;justify-content:center}
+.hero-portrait{display:block;width:100%;aspect-ratio:1/1;max-width:430px;object-fit:cover;object-position:center 30%;border:1px solid #263440;border-radius:16px;box-shadow:0 22px 60px #0008}
+.project-media.hand-photo{padding:0;background:#10161d}
+.project-media.hand-photo img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+.featured-project-visual .project-media.hand-photo{width:100%;height:320px;min-height:0;aspect-ratio:auto;background:#0c141b}
+.project-media.daylight-visual{height:158px;max-height:158px;display:flex;flex-direction:column;gap:10px;padding:13px;background:linear-gradient(120deg,#0c1e2e,#152b3c);border:1px solid #2c4e60}
+.daylight-visual .dh-flow{display:flex;gap:7px;align-items:center;width:100%;justify-content:center}
+.daylight-visual .dh-node{flex:1;min-width:0;padding:11px 6px;background:#132533;border:1px solid #31556d;border-radius:7px;color:#b7d8eb;font-size:.66rem;letter-spacing:.1px;text-align:center;font-weight:600;line-height:1.3}
+.daylight-visual .dh-node b{display:block;font-size:1.05rem;color:#4fc3f7;line-height:1.25;margin-bottom:4px}
+.daylight-visual .dh-arrow{color:#4fc3f7;font-size:1.2rem}
+.daylight-visual .dh-label{color:#72b3d2;font-size:.68rem;letter-spacing:1.4px;text-align:center}
+.featured-project-visual .project-media.daylight-visual{width:100%;height:200px;max-height:200px;min-height:0;aspect-ratio:auto;justify-content:center}
+.project-media img{object-fit:contain}
+.project.featured .project-media img{object-fit:cover}
+@media(max-width:750px){.hero.hero-with-photo{grid-template-columns:1fr;gap:24px}.hero-portrait-wrap{justify-content:flex-start}.hero-portrait{max-width:400px}.featured-project-visual .project-media.hand-photo{height:240px}.featured-project-visual .project-media.daylight-visual{height:170px}}
