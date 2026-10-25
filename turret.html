@@ -12,7 +12,7 @@
         content="Hand-gesture controlled robotic turret using Raspberry Pi, OpenCV, MediaPipe, Arduino, UART communication and multi-axis servo control."
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20261025-sharp">
 
     <style>
 
@@ -832,105 +832,7 @@
 <body>
 
 
-<!-- =========================================================
-     NAVIGATION
-     ========================================================= -->
 
-<nav>
-
-    <div class="logo">
-        <a href="index.html">HI.</a>
-    </div>
-
-    <div class="nav-links">
-        <a href="index.html#about">About</a>
-        <a href="projects.html">Featured Work</a>
-        <a href="leadership.html">Leadership</a>
-        <a href="index.html#contact">Contact</a>
-        <a href="https://github.com/hib50" target="_blank">GitHub</a>
-    </div>
-
-</nav>
-
-
-
-<main class="turret-page">
-
-
-    <!-- =====================================================
-         HERO
-         ===================================================== -->
-
-    <section class="turret-hero">
-
-        <div class="turret-hero-top">
-
-            <p class="turret-label">
-                ROBOTICS / COMPUTER VISION
-            </p>
-
-            <p class="turret-project-id">
-                BUILD 03
-            </p>
-
-        </div>
-
-
-        <h1 class="turret-title">
-
-            Control a robot<br>
-
-            <span class="blue">
-                with your hand.
-            </span>
-
-        </h1>
-
-
-        <div class="turret-intro">
-
-            <p class="turret-intro-copy">
-                A camera-driven robotic turret that uses computer vision
-                to interpret hand gestures and translate them into
-                physical movement through a Raspberry Pi and Arduino
-                control system.
-            </p>
-
-
-            <div class="turret-stack">
-                RASPBERRY PI<br>
-                PYTHON<br>
-                OPENCV<br>
-                MEDIAPIPE<br>
-                ARDUINO<br>
-                UART<br>
-                PWM
-            </div>
-
-        </div>
-
-
-        <div class="image-placeholder hero-media">
-
-            <div class="placeholder-content">
-
-                
-
-                <strong>Updates are on the way</strong>
-
-                <small>Photos coming soon.</small>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         CONCEPT
-         ===================================================== -->
 
     <section class="idea">
 
@@ -950,148 +852,7 @@
 
 
 
-    <!-- =====================================================
-         GESTURE LANGUAGE
-         ===================================================== -->
-
-    <section class="gesture-section">
-
-        <div class="gesture-intro">
-
-            <p class="turret-label">
-                GESTURE LANGUAGE
-            </p>
-
-            <h2>
-                No controller.
-                No joystick.
-                Just movement.
-            </h2>
-
-        </div>
-
-
-        <div class="gesture-list">
-
-
-            <div class="gesture-line">
-
-                <span class="gesture-num">
-                    01
-                </span>
-
-                <span class="gesture-name">
-                    One finger
-                </span>
-
-                <span class="gesture-action">
-                    X AXIS / PAN
-                </span>
-
-            </div>
-
-
-            <div class="gesture-line">
-
-                <span class="gesture-num">
-                    02
-                </span>
-
-                <span class="gesture-name">
-                    Two fingers
-                </span>
-
-                <span class="gesture-action">
-                    Y AXIS / TILT
-                </span>
-
-            </div>
-
-
-            <div class="gesture-line">
-
-                <span class="gesture-num">
-                    03
-                </span>
-
-                <span class="gesture-name">
-                    Closed fist
-                </span>
-
-                <span class="gesture-action">
-                    TRIGGER
-                </span>
-
-            </div>
-
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         COMPUTER VISION
-         ===================================================== -->
-
-    <section class="vision">
-
-        <div class="vision-header">
-
-            <p class="turret-label">
-                WHAT THE COMPUTER SEES
-            </p>
-
-            <h2>
-                Your hand becomes data.
-            </h2>
-
-            <p>
-                The camera feed is processed with OpenCV and MediaPipe.
-                Hand landmarks provide the information needed to identify
-                finger states and track the hand's location within the image.
-                That information is then converted into a control mode and
-                target position.
-            </p>
-
-        </div>
-
-
-        <div class="image-placeholder vision-media">
-
-            <div class="placeholder-content">
-
-                
-
-                <strong>Updates are on the way</strong>
-
-                <small>Photos coming soon.</small>
-
-            </div>
-
-        </div>
-
-
-        <div class="vision-readout">
-
-            <span>
-                MEDIAPIPE // 21 HAND LANDMARKS
-            </span>
-
-            <span>
-                X / Y / Z / GESTURE / TRIGGER
-            </span>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         CONTROL LOOP
-         ===================================================== -->
+    
 
     <section class="control-path">
 
@@ -1202,193 +963,7 @@
 
 
 
-    <!-- =====================================================
-         PI VS ARDUINO
-         ===================================================== -->
-
-    <section class="two-computers">
-
-        <div class="two-computers-title">
-
-            <p class="turret-label">
-                WHY RASPBERRY PI + ARDUINO?
-            </p>
-
-            <h2>
-                One system.
-                Two very different jobs.
-            </h2>
-
-        </div>
-
-
-        <div class="brain-muscle">
-
-
-            <div class="computer-side">
-
-                <span class="computer-number">
-                    01
-                </span>
-
-                <p class="computer-role">
-                    HIGH-LEVEL COMPUTE
-                </p>
-
-                <h3>
-                    Raspberry Pi
-                </h3>
-
-                <p>
-                    The Pi handles the software-heavy side of the
-                    system: camera input, computer vision, gesture
-                    interpretation and command generation.
-                </p>
-
-                <ul>
-                    <li>Linux environment</li>
-                    <li>Python</li>
-                    <li>OpenCV</li>
-                    <li>MediaPipe</li>
-                    <li>Serial transmission</li>
-                    <li>GPIO control</li>
-                </ul>
-
-            </div>
-
-
-
-            <div class="computer-side">
-
-                <span class="computer-number">
-                    02
-                </span>
-
-                <p class="computer-role">
-                    PHYSICAL CONTROL
-                </p>
-
-                <h3>
-                    Arduino
-                </h3>
-
-                <p>
-                    The Arduino receives the requested axis positions
-                    and handles the dedicated PWM outputs used to
-                    move the physical mechanism.
-                </p>
-
-                <ul>
-                    <li>X-axis servo</li>
-                    <li>Y-axis servo</li>
-                    <li>Z-axis trigger servo</li>
-                    <li>Angle limiting</li>
-                    <li>PWM generation</li>
-                    <li>Serial command parsing</li>
-                </ul>
-
-            </div>
-
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         MECHANISM
-         ===================================================== -->
-
-    <section class="hardware">
-
-        <div class="hardware-grid">
-
-
-            <div class="image-placeholder hardware-photo">
-
-                <div class="placeholder-content">
-
-                    
-
-                    <strong>Updates are on the way</strong>
-
-                    <small>Photos coming soon.</small>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="hardware-copy">
-
-                <p class="turret-label">
-                    THE MACHINE
-                </p>
-
-                <h2>
-                    Vision only matters if something moves.
-                </h2>
-
-                <p>
-                    Three servo channels convert the software output
-                    into mechanical action. Separate axis assignments
-                    make horizontal movement, vertical movement and
-                    the firing mechanism independently controllable.
-                </p>
-
-
-                <div class="axis-readout">
-
-
-                    <div class="axis">
-
-                        <span>X</span>
-
-                        <span>
-                            Arduino D3 → horizontal servo
-                        </span>
-
-                    </div>
-
-
-                    <div class="axis">
-
-                        <span>Y</span>
-
-                        <span>
-                            Arduino D5 → vertical servo
-                        </span>
-
-                    </div>
-
-
-                    <div class="axis">
-
-                        <span>Z</span>
-
-                        <span>
-                            Arduino D6 → trigger servo
-                        </span>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         ELECTRONICS
-         ===================================================== -->
+    
 
     <section class="electronics">
 
@@ -1534,15 +1109,7 @@
 
                 <div class="image-placeholder electronics-photo">
 
-                    <div class="placeholder-content">
-
-                        
-
-                        <strong>Updates are on the way</strong>
-
-                        <small>Photos coming soon.</small>
-
-                    </div>
+                    <div class="placeholder-content"><strong>Photos coming soon</strong></div>
 
                 </div>
 
@@ -1550,15 +1117,7 @@
 
                 <div class="image-placeholder electronics-photo">
 
-                    <div class="placeholder-content">
-
-                        
-
-                        <strong>Updates are on the way</strong>
-
-                        <small>Photos coming soon.</small>
-
-                    </div>
+                    <div class="placeholder-content"><strong>Photos coming soon</strong></div>
 
                 </div>
 
@@ -1566,15 +1125,7 @@
 
                 <div class="image-placeholder electronics-photo">
 
-                    <div class="placeholder-content">
-
-                        
-
-                        <strong>Updates are on the way</strong>
-
-                        <small>Photos coming soon.</small>
-
-                    </div>
+                    <div class="placeholder-content"><strong>Photos coming soon</strong></div>
 
                 </div>
 
@@ -1588,76 +1139,7 @@
 
 
 
-    <!-- =====================================================
-         WORKSHOP
-         ===================================================== -->
-
-    <section class="workshop">
-
-
-        <div class="image-placeholder workshop-photo">
-
-            <div class="placeholder-content">
-
-                
-
-                <strong>Updates are on the way</strong>
-
-                <small>Photos coming soon.</small>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="workshop-story">
-
-            <p class="turret-label">
-                FROM BUILD → WORKSHOP
-            </p>
-
-            <h2>
-                Then I turned the project into something other students could build.
-            </h2>
-
-            <p>
-                The turret became the centerpiece of a hands-on
-                Raspberry Pi workshop through the Mechatronics Course Union.
-                Students were introduced to the complete connection between
-                software and hardware rather than only being shown a finished robot.
-            </p>
-
-            <p>
-                The workshop covered the difference between microprocessors
-                and microcontrollers, Raspberry Pi GPIO, UART communication,
-                Arduino PWM, servo integration, computer vision, gesture
-                interpretation and physical calibration.
-            </p>
-
-
-            <div class="workshop-topics">
-
-                <span>GPIO</span>
-                <span>UART</span>
-                <span>PWM</span>
-                <span>RASPBERRY PI</span>
-                <span>ARDUINO</span>
-                <span>OPENCV</span>
-                <span>MEDIAPIPE</span>
-                <span>CALIBRATION</span>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         DEMONSTRATION
-         ===================================================== -->
+    
 
     <section class="demo">
 
@@ -1669,23 +1151,12 @@
             See it move.
         </h2>
 
-        <p class="demo-intro">
-            This area will eventually hold your best actual
-            demonstration footage instead of another explanation.
-        </p>
+        <p class="demo-intro">Demonstration footage and testing updates are on the way.</p>
 
 
         <div class="image-placeholder demo-main">
 
-            <div class="placeholder-content">
-
-                
-
-                <strong>Updates are on the way</strong>
-
-                <small>Photos coming soon.</small>
-
-            </div>
+            <div class="placeholder-content"><strong>Demo footage coming soon</strong></div>
 
         </div>
 
@@ -1693,15 +1164,7 @@
 
         <div class="image-placeholder demo-secondary">
 
-            <div class="placeholder-content">
-
-                
-
-                <strong>Updates are on the way</strong>
-
-                <small>Photos coming soon.</small>
-
-            </div>
+            <div class="placeholder-content"><strong>Demo footage coming soon</strong></div>
 
         </div>
 
