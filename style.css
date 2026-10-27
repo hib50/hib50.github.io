@@ -885,3 +885,8 @@ footer {
 .rp2040-downloads a{padding:11px 15px;border:1px solid #365469;border-radius:7px;color:#8ed5f7;text-decoration:none;font-size:.92rem}
 .rp2040-downloads a:hover{background:#152b39}
 @media(max-width:720px){.rp2040-gallery{grid-template-columns:1fr}.rp2040-figure a{height:250px}}
+
+/* Display authentic KiCad PCB screenshots without a simulated green PCB background. */
+.rp2040-pcb-thumb{background:#001429;padding:7px}
+.rp2040-pcb-thumb img{background:#001429;object-fit:contain}
+.rp2040-figure:nth-child(2) a{background:#001429}
